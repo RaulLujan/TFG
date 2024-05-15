@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<title>Resultados de Búsqueda</title>
+<link rel="stylesheet" href="/css/style.css">
+<style>
+
+</style>
+</head>
+<body>
+
+    <nav class="navigation-menu">
+        <div>
+          <a href="perfil.html" class="nav-link">Perfil</a>
+          <a href="busquedaST.html" class="nav-link">Buscar Sitios Turisticos</a>
+          <a href="viajes.html" class="nav-link">Viajes Guardados</a>
+        </div>
+        <div class="right-menu">
+          <a href="login.html" class="nav-link">Cerrar Sesión</a>
+        </div>
+      </nav>
+
+<div class="search-results-container">
+  <h2>Resultados de Búsqueda de Sitios Turísticos</h2>
+  <div id="results"></div>
+</div>
+
+<script>
+window.onload = function() {
+  axios.get('/api/resultadoST')
+    .then(function (response) {
+        const  resultados = response.data;
+        const container = document.getElementById('results');
+        resultados.forEach((result) => {
+        const resultDiv = document.createElement('div');
+        resultDiv.className = 'result-card';
+        resultDiv.innerHTML = `
+            <h3>${result.nombre}</h3>
+            <p>${result.descripcion}</p>
+            <a href="${result.url}" target="_blank">Visitar sitio web</a>
+            <p>Precio de entrada: $${result.precioEntrada}</p>
+            <p>Actividades: ${result.actividades.join(', ')}</p>
+            <p>Modo de transporte: ${result.modoTransporte}</p>
+            <p>Clima: ${result.clima}</p>
+            <p>Ubicación: ${result.ubicacion}</p>
+            <button onclick="selectSite('${encodeURIComponent(JSON.stringify(result))}')">Seleccionar este sitio</button>
+        `;
+        container.appendChild(resultDiv);
+    });
+    })
+    .catch(function (error) {
+      console.error('Error al cargar los datos de las busqueda de ST:', error);
+    });
+
+
+  }
+
+  function selectSite(encodedSiteData) {
+    const decodedSiteData = decodeURIComponent(encodedSiteData);
+    const site = JSON.parse(decodedSiteData);
+    alert('Has seleccionado: ' + site.nombre);
+    axios.post('/api/resultadoST', { site });
+    window.location.href = '/mostrarST.html';  // Asegúrate de que la URL es correcta
+  }
+</script>
+
+</body>
+</html>

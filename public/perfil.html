@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<title>Perfil de Usuario</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navigation-menu">
+    <div>
+      <a href="perfil.html" class="nav-link">Perfil</a>
+      <a href="busquedaST.html" class="nav-link">Buscar Sitios Turisticos</a>
+      <a href="viajes.html" class="nav-link">Viajes Guardados</a>
+    </div>
+    <div class="right-menu">
+      <a href="login.html" class="nav-link">Cerrar Sesión</a>
+    </div>
+  </nav>
+<div class="search-container">
+  <h2>Perfil de Usuario</h2>
+  <form id="profile-form">
+    <label for="username">Nombre de usuario</label>
+    <input type="text" id="username" class="form-input" value="" required disabled>
+
+    <label for="email">Correo</label>
+    <input type="email" id="email" class="form-input" value="" required disabled>
+
+    <label for="phone">Número de teléfono</label>
+    <input type="tel" id="phone" class="form-input" value="" required disabled>
+
+    <label for="fullname">Nombre completo</label>
+    <input type="text" id="fullname" class="form-input" value="" required disabled>
+
+    <label for="age">Edad</label>
+    <input type="number" id="age" class="form-input" value="" min="18" required disabled>
+
+    <label for="civil-status">Estado civil</label>
+    <select id="civil-status" class="form-select" required disabled>
+      <option value="">Estado civil</option>
+      <option value="soltero">Soltero/a</option>
+      <option value="casado">Casado/a</option>
+      <option value="divorciado">Divorciado/a</option>
+      <option value="viudo">Viudo/a</option>
+    </select>
+
+    <label for="family-size">Tamaño de la familia</label>
+    <input type="number" id="family-size" class="form-input" value="" min="1" required disabled>
+
+    <label for="vehicle">Tiene vehículo</label>
+    <input type="checkbox" id="vehicle" name="vehicle" value="Tiene vehículo" disabled>
+
+    <label for="preferenciaClimatica">Preferencia Climática</label>
+    <select id="preferenciaClimatica" class="form-select" disabled>
+      <option value="templado">Templado</option>
+      <option value="calido">Cálido</option>
+      <option value="frio">Frío</option>
+      <option value="variable">Variable</option>
+    </select>
+
+    <label for="preferenciaIdioma">Preferencia de Idioma</label>
+    <select id="preferenciaIdioma" class="form-select" disabled>
+      <option value="espanol">Español</option>
+      <option value="ingles">Inglés</option>
+      <option value="frances">Francés</option>
+      <option value="aleman">Alemán</option>
+    </select>
+
+    <label for="nivelAventura">Nivel de Aventura</label>
+    <select id="nivelAventura" class="form-select" disabled>
+      <option value="bajo">Bajo</option>
+      <option value="moderado">Moderado</option>
+      <option value="alto">Alto</option>
+      <option value="extremo">Extremo</option>
+    </select>
+
+    <label for="interesCultural">Interés Cultural</label>
+    <input type="checkbox" id="interesCultural" disabled>
+
+    <label for="interesDeportivo">Interés Deportivo</label>
+    <input type="checkbox" id="interesDeportivo" disabled>
+
+    <label for="interesRelajacion">Interés de Relajación</label>
+    <input type="checkbox" id="interesRelajacion" disabled>
+
+    <label for="amorNaturaleza">Amor por la Naturaleza</label>
+    <input type="checkbox" id="amorNaturaleza" disabled>
+
+    <!-- Tabla dinámica para la lista de amigos -->
+    <div class="friends-list-container">
+      <label>Lista de Amigos</label>
+      <table id="friends-table">
+        <thead>
+          <tr>
+            <th>Nombre Usuario</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th>Vehículo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Las filas de amigos se generarán aquí -->
+        </tbody>
+      </table>
+    </div>
+
+    <button type="button" onclick="editProfile()" class="submit-btn">Editar Perfil</button>
+	  <button type="button" onclick="actualizarPerfil()" class="submit-btn">Guardar</button>
+    <button type="button" onclick="cancelar()" class="submit-btn">Cancelar</button>
+  </form>
+</div>
+
+<script>
+window.onload = function() {
+  axios.get('/api/usuario')
+    .then(function (response) {
+      const data = response.data;
+      document.getElementById('username').value = data.nombreUsuario || '';
+      document.getElementById('email').value = data.correo || '';
+      document.getElementById('phone').value = data.numeroTelefono || '';
+      document.getElementById('fullname').value = data.nombreCompleto || '';
+      document.getElementById('age').value = data.edad || '';
+      document.getElementById('civil-status').value = data.estadoCivil || '';
+      document.getElementById('family-size').value = data.tamanyoFamilia || '';
+      document.getElementById('vehicle').checked = data.tieneVehiculo || false;
+      document.getElementById('preferenciaClimatica').value = data.preferenciaClimatica || '';
+      document.getElementById('preferenciaIdioma').value = data.preferenciaIdioma || '';
+    })
+    .catch(function (error) {
+      console.error('Error al cargar los datos del usuario:', error);
+    });
+
+    axios.get('/api/perfil')
+    .then(function (response) {
+      const data = response.data;
+      document.getElementById('nivelAventura').value = data.nivelAventura || '';
+      document.getElementById('interesCultural').checked = data.interesCultural || false;
+      document.getElementById('interesDeportivo').checked = data.interesDeportivo || false;
+      document.getElementById('interesRelajacion').checked = data.interesRelajacion || false;
+      document.getElementById('amorNaturaleza').checked = data.amorNaturaleza || false;
+    })
+    .catch(function (error) {
+      console.error('Error al cargar los datos del usuario:', error);
+    });
+
+    axios.get('/api/listAmigos')
+    .then(function (response) {
+      const data = response.data;
+
+      const friendsTable = document.getElementById('friends-table').getElementsByTagName('tbody')[0];
+      data.forEach(friend => {
+        let row = friendsTable.insertRow();
+        let cell1 = row.insertCell(0);
+        let cell2 = row.insertCell(1);
+        let cell3 = row.insertCell(2);
+        let cell4 = row.insertCell(3);
+        cell1.textContent = friend.nombreUsuario;
+        cell2.textContent = friend.correo;
+        cell3.textContent = friend.numeroTelefono;
+        cell4.textContent = friend.tieneVehiculo ? 'Sí' : 'No';
+      });
+    })
+    .catch(function (error) {
+      console.error('Error al cargar los datos del usuario:', error);
+    });
+
+}
+
+function actualizarPerfil() {
+  const usuario = {
+    nombreUsuario: document.getElementById('username').value,
+    correo: document.getElementById('email').value,
+    numeroTelefono: document.getElementById('phone').value,
+    nombreCompleto: document.getElementById('fullname').value,
+    edad: parseInt(document.getElementById('age').value),
+    estadoCivil: document.getElementById('civil-status').value,
+    tamanyoFamilia: parseInt(document.getElementById('family-size').value),
+    preferenciaClimatica: document.getElementById('preferenciaClimatica').value,
+    tieneVehiculo: document.getElementById('vehicle').checked,
+    preferenciaIdioma: document.getElementById('preferenciaIdioma').value,
+  };
+
+  const preferenciasUsuario = {
+    nivelAventura: document.getElementById('nivelAventura').value,
+    interesCultural: document.getElementById('interesCultural').checked,
+    interesDeportivo: document.getElementById('interesDeportivo').checked,
+    interesRelajacion: document.getElementById('interesRelajacion').checked,
+    amorNaturaleza: document.getElementById('amorNaturaleza').checked
+  };
+
+  axios.post('/api/actualizarPerfil', { usuario, preferenciasUsuario })
+    .then(function(response) {
+      console.log('Perfil actualizado con éxito', response);
+      window.location.href = '/perfil.html'; 
+      // Manejo post actualización, por ejemplo, redirigir o mostrar un mensaje de éxito
+    })
+    .catch(function(error) {
+      console.error('Error al actualizar el perfil', error);
+      // Manejo de error, mostrar mensaje al usuario
+    });
+}
+
+
+function cancelar() {
+  window.location.href = '/busquedaST.html'; 
+}
+function editProfile() {
+  // Activar la edición de los campos del formulario
+  var formElements = document.getElementById("profile-form").elements;
+  for (var i = 0; i < formElements.length; i++) {
+    formElements[i].disabled = false;
+  }
+}
+</script>
+
+</body>
+</html>

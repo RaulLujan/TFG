@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Página de Inicio de Sesión</title>
+<link rel="stylesheet" href="/css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Iniciar Sesión</h2>
+    <input type="text" id="email" class="form-input" placeholder="Usuario o Correo" required>
+    <input type="password" id="password" class="form-input" placeholder="Contraseña" required>
+    <button type="button" class="login-btn" onclick="login()">Iniciar Sesión</button>
+    <div id="error-message" style="color: red;"></div> <!-- Elemento para mensajes de error -->
+    <a href="register.html" class="register-link">No estás registrado? Regístrate aquí</a>
+  </div>
+  
+
+<script>
+  function login() {
+    var correo = document.getElementById('email').value;
+    var contrasenya = document.getElementById('password').value;
+    
+    axios.post('/api/login', {
+      correo: correo,
+      contrasenya: contrasenya
+    })
+    .then(function (response) {
+      console.log('Success:', response.data);
+      // Redirección si la respuesta es OK
+      if (response.status === 200) {
+        window.location.href = '/busquedaST.html';  // Asegúrate de que la URL es correcta
+      } else {
+        // Mostrar mensaje de error específico basado en la respuesta
+        alert('Credenciales incorrectas o problema en el servidor. Por favor, intenta de nuevo.');
+      }
+    })
+    .catch(function (error) {
+      console.error('Error:', error.response ? error.response.data : error);
+      // Mostrar mensaje de error
+      const errorMessage = error.response && error.response.data ? error.response.data.message : 'Error desconocido';
+      alert('Error: ' + errorMessage);
+    });
+  }
+  </script>
+
+</body>
+</html>

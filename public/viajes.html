@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<title>Viajes Guardados</title>
+<link rel="stylesheet" href="/css/style.css">
+<style>
+  .travel-card {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+
+<nav class="navigation-menu">
+  <div>
+    <a href="perfil.html" class="nav-link">Perfil</a>
+    <a href="busquedaST.html" class="nav-link">Buscar Sitios Turisticos</a>
+    <a href="viajes.html" class="nav-link">Viajes Guardados</a>
+  </div>
+  <div class="right-menu">
+    <a href="login.html" class="nav-link">Cerrar Sesión</a>
+  </div>
+</nav>
+
+<div class="search-results-container">
+  <h2>Viajes Guardados</h2>
+  <div id="saved-trips"></div>
+</div>
+
+<script>
+window.onload = function() {
+  axios.get('/api/viajesGuardados')
+    .then(function (response) {
+        const viajes = response.data;
+        const container = document.getElementById('saved-trips');
+        viajes.forEach((viaje) => {
+        const tripDiv = document.createElement('div');
+        tripDiv.className = 'travel-card';
+        let alojamientoInfo = viaje.alojamiento ? `<h4>Alojamiento: ${viaje.alojamiento.nombre}</h4>
+            <p>${viaje.alojamiento.descripcion}</p>
+            <p>Precio por noche: $${viaje.alojamiento.precioPorNoche}</p>` : '<p>No hay alojamiento registrado para este viaje</p>';
+
+        tripDiv.innerHTML = `
+            <h3>Sitio Turístico: ${viaje.sitioTuristico.nombre}</h3>
+            <p>${viaje.sitioTuristico.descripcion}</p>
+            <a href="${viaje.sitioTuristico.url}" target="_blank">Visitar sitio web</a>
+            <p>Precio de entrada: $${viaje.sitioTuristico.precioEntrada}</p>
+            ${alojamientoInfo}
+        `;
+        container.appendChild(tripDiv);
+    });
+    })
+    .catch(function (error) {
+      console.error('Error al cargar los datos de los viajes guardados:', error);
+    });
+}
+</script>
+
+</body>
+</html>

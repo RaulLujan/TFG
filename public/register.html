@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Página de Registro</title>
+<link rel="stylesheet" href="/css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+
+<div class="register-container">
+  <h2>Registro</h2>
+  <input type="text" id="nombreUsuario" class="form-input" placeholder="Nombre de usuario" required>
+  <input type="email" id="correo" class="form-input" placeholder="Correo" required>
+  <input type="password" id="contrasenya" class="form-input" placeholder="Contraseña" required>
+  <input type="tel" id="numeroTelefono" class="form-input" placeholder="Número de teléfono" required>
+  <input type="text" id="nombreCompleto" class="form-input" placeholder="Nombre completo" required>
+  <input type="number" id="edad" class="form-input" placeholder="Edad" min="18" required>
+  
+  <select id="estadoCivil" class="form-select" required>
+    <option value="">Estado civil</option>
+    <option value="soltero">Soltero/a</option>
+    <option value="casado">Casado/a</option>
+    <option value="divorciado">Divorciado/a</option>
+    <option value="viudo">Viudo/a</option>
+  </select>
+  
+  <input type="number" id="tamanyoFamilia" class="form-input" placeholder="Tamaño de la familia" min="1" required>
+  
+  <input type="checkbox" id="tieneVehiculo" name="vehicle" value="Tiene vehículo"> Tiene vehículo
+
+  <button type="button" onclick="register()" class="submit-btn">Registrar</button>
+  
+  <a href="login.html" class="back-btn">Volver</a>
+  <div id="error-message" style="color: red;"></div>
+</div>
+
+
+
+<script>
+  function login() {
+    var correo = document.getElementById('email').value;
+    var contrasenya = document.getElementById('password').value;
+    
+    axios.post('/api/login', {
+      correo: correo,
+      contrasenya: contrasenya
+    })
+    .then(function (response) {
+      console.log('Success:', response.data);
+      // Redirección si la respuesta es OK
+      if (response.status === 200) {
+        window.location.href = '/busquedaST.html';  // Asegúrate de que la URL es correcta
+      } else {
+        // Mostrar mensaje de error específico basado en la respuesta
+        alert('Credenciales incorrectas o problema en el servidor. Por favor, intenta de nuevo.');
+      }
+    })
+    .catch(function (error) {
+      console.error('Error:', error.response ? error.response.data : error);
+      // Mostrar mensaje de error
+      const errorMessage = error.response && error.response.data ? error.response.data.message : 'Error desconocido';
+      alert('Error: ' + errorMessage);
+    });
+  }
+  </script>
+
+<script>
+function register() {
+    var nombreUsuario = document.getElementById('nombreUsuario').value;
+    var correo = document.getElementById('correo').value;
+    var contrasenya = document.getElementById('contrasenya').value;
+    var numeroTelefono = document.getElementById('numeroTelefono').value;
+    var nombreCompleto = document.getElementById('nombreCompleto').value;
+    var edad = parseInt(document.getElementById('edad').value);
+    var estadoCivil = document.getElementById('estadoCivil').value;
+    var tamanyoFamilia = parseInt(document.getElementById('tamanyoFamilia').value);
+    var tieneVehiculo = document.getElementById('tieneVehiculo').checked;
+
+  axios.post('/api/register', {
+    nombreUsuario: nombreUsuario,
+    correo: correo,
+    contrasenya: contrasenya,
+    numeroTelefono: numeroTelefono,
+    nombreCompleto: nombreCompleto,
+    edad: edad,
+    estadoCivil: estadoCivil,
+    tamanyoFamilia: tamanyoFamilia,
+    tieneVehiculo: tieneVehiculo
+  })
+    .then(function (response) {
+      if (response.status === 200) {
+        window.location.href = '/login.html';
+      } else {
+        document.getElementById('error-message').textContent = 'Error en el registro. Por favor, intenta de nuevo.';
+      }
+    })
+    .catch(function (error) {
+      const errorMessage = error.response && error.response.data ? error.response.data.message : 'Error desconocido en el registro';
+      document.getElementById('error-message').textContent = 'Error: ' + errorMessage;
+    });
+}
+</script>
+
+</body>
+</html>

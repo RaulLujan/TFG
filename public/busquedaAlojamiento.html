@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>Filtrar Búsqueda de Alojamientos</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="content">
+    <nav class="navigation-menu">
+        <div>
+            <a href="perfil.html" class="nav-link">Perfil</a>
+            <a href="busquedaST.html" class="nav-link">Buscar Sitios Turisticos</a>
+            <a href="viajes.html" class="nav-link">Viajes Guardados</a>
+        </div>
+        <div class="right-menu">
+            <a href="login.html" class="nav-link">Cerrar Sesión</a>
+        </div>
+    </nav>
+
+    <div class="search-container">
+        <h2>Filtrar Alojamientos</h2>
+        <label for="participants">Número de Participantes</label>
+        <input type="number" id="participants" class="form-input" placeholder="Ej: 4" min="1">
+        <label for="budget">Rango de Presupuesto ($)</label>
+        <input type="text" id="budget" class="form-input" placeholder="Ej: 50-50000">
+        <label for="transport">Tipo Alojamiento</label>
+        <select id="transport" class="form-select">
+            <option value="">Selecciona una opción</option>
+            <option value="hotel">Hotel</option>
+            <option value="casa_rural">Casa Rural</option>
+            <option value="chalet">Chalet</option>
+            <option value="tienda_acampada">Tienda de Acampada</option>
+        </select>
+        <fieldset>
+            <legend>Características de Interés</legend>
+           <label><input type="checkbox" name="features" value="breakfast_included"> Desayunos Incluidas</label>
+      <label><input type="checkbox" name="features" value="breakfast_included"> Comidas Incluidas</label>
+      <label><input type="checkbox" name="features" value="pet_friendly"> Admite Mascotas</label>
+      <label><input type="checkbox" name="features" value="internet"> Internet</label>
+      <label><input type="checkbox" name="features" value="parking"> Parking</label>
+      <label><input type="checkbox" name="features" value="swimming_pool"> Piscina</label>
+      <label><input type="checkbox" name="features" value="barbecue"> Barbacoa</label>
+        </fieldset>
+        <button type="button" onclick="buscarAlojamientos()" class="submit-btn">Buscar</button>
+    </div>
+</div>
+
+<script>
+    function buscarAlojamientos() {
+        const busqueda = {
+            participantes: document.getElementById('participants').value,
+            tipoAlojamiento: document.getElementById('transport').value,
+            rangoPrecio: document.getElementById('budget').value,
+            // Add other fields if needed
+        };
+
+        axios.post('/api/buscarAlojamiento', { busqueda })
+        .then(function (response) {
+            window.location.href = '/resultadosAlojamiento.html'; // Ensure you have this page to show results
+        })
+        .catch(function (error) {
+            console.error('Error:', error.response ? error.response.data : error);
+            alert('Error al enviar la búsqueda: ' + (error.response && error.response.data ? error.response.data.message : 'Error desconocido'));
+        });
+    };
+</script>
+
+</body>
+</html>

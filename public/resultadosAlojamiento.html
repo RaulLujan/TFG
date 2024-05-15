@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>Resultados de Búsqueda de Alojamientos</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <nav class="navigation-menu">
+        <div>
+          <a href="perfil.html" class="nav-link">Perfil</a>
+          <a href="busquedaST.html" class="nav-link">Buscar Sitios Turisticos</a>
+          <a href="viajes.html" class="nav-link">Viajes Guardados</a>
+        </div>
+        <div class="right-menu">
+          <a href="login.html" class="nav-link">Cerrar Sesión</a>
+        </div>
+    </nav>
+
+<div class="search-results-container">
+    <h2>Resultados de Búsqueda de Alojamientos</h2>
+    <div id="results"></div>
+</div>
+
+<script>
+window.onload = function() {
+    axios.get('/api/resultadoAlojamiento')
+    .then(function (response) {
+        const alojamientos = response.data;
+        const container = document.getElementById('results');
+        if (Array.isArray(alojamientos)) {
+            alojamientos.forEach((alojamiento) => {
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'result-card';
+                resultDiv.innerHTML = `
+                    <h3>${alojamiento.nombre}</h3>
+                    <p>${alojamiento.descripcion}</p>
+                    <p>Precio por noche: $${alojamiento.precioPorNoche}</p>
+                    <p>Tipo de alojamiento: ${alojamiento.tipoAlojamiento}</p>
+                    <p>Distancia al parque: ${alojamiento.distancia}</p>
+                    <p>Facilidades: ${alojamiento.facilidades.join(', ')}</p>
+                    <p>Valoración: ${alojamiento.valoracion} estrellas</p>
+                    <a href="${alojamiento.urlReserva}" target="_blank">Reservar</a>
+                    <button onclick="guardarAlojamiento('${encodeURIComponent(JSON.stringify(alojamiento))}')">Seleccionar Alojamiento</button>
+                `;
+                container.appendChild(resultDiv);
+            });
+        } else {
+            console.error('Formato de datos incorrecto.');
+            alert('Formato de datos incorrecto.');
+        }
+    })
+    .catch(function (error) {
+        console.error('Error al cargar los datos de los alojamientos:', error);
+        alert('Error al cargar los datos de los alojamientos: ' + error.message);
+    });
+}
+
+function guardarAlojamiento(encodedAlojamiento) {
+    const alojamiento = JSON.parse(decodeURIComponent(encodedAlojamiento));
+
+    alert('Has seleccionado: ' + alojamiento.nombre);
+    axios.post('/api/guardarAlojamiento', { alojamiento });
+    window.location.href = '/viajes.html';  // Asegúrate de que la URL es correcta
+}
+</script>
+
+</body>
+</html>

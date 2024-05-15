@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<title>Filtrar Búsqueda de Sitios Turísticos</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="content">
+    <nav class="navigation-menu">
+        <div>
+          <a href="perfil.html" class="nav-link">Perfil</a>
+          <a href="busquedaST.html" class="nav-link">Buscar Sitios Turisticos</a>
+          <a href="viajes.html" class="nav-link">Viajes Guardados</a>
+        </div>
+        <div class="right-menu">
+          <a href="login.html" class="nav-link">Cerrar Sesión</a>
+        </div>
+      </nav>
+
+
+	<div class="search-container">
+	  <h2>Filtrar Sitios Turísticos</h2>
+
+	  <label for="participants">Número de Participantes</label>
+	  <input type="number" id="participants" class="form-input" placeholder="Ej: 4" min="1">
+
+	  <label for="transport">Modo de Transporte</label>
+	  <select id="transport" class="form-select">
+		<option value="">Selecciona una opción</option>
+		<option value="Apie">A pie</option>
+		<option value="Bicicleta">Bicicleta</option>
+		<option value="Coche">Coche</option>
+		<option value="Autobús">Autobús</option>
+		<option value="Tren">Tren</option>
+		<option value="Avion">Avion</option>
+		<option value="Barco">Barco</option>
+	  </select>
+
+	  <label for="budget">Rango de Presupuesto ($)</label>
+	  <input type="text" id="budget" class="form-input" placeholder="Ej: 50-50000">
+
+	  <label for="weather">Tipo Clima</label>
+	  <select id="weather" class="form-select">
+		<option value="">Selecciona una opción</option>
+		<option value="Playa">Playa</option>
+		<option value="Montaña">Montaña</option>
+		<option value="Lago">Lago</option>
+		<option value="Padro">Padro</option>
+		<option value="Bosque">Bosque</option>
+		<option value="Selva">Selva</option>
+		<option value="Desierto">Desierto</option>
+		<option value="Sabana">Sabana</option>
+		<option value="Artico">Artico</option>
+	  </select>
+
+	  <label for="activities">Actividades de Interés</label>
+	  <input type="text" id="activities" class="form-input" placeholder="Ej: Senderismo, Surf">
+
+	  <label for="places">Lugares de Interés</label>
+	  <input type="text" id="places" class="form-input" placeholder="Ej: Museos, Parques">
+
+	  <!-- Aquí puedes agregar más filtros si lo deseas -->
+
+	  <button type="button" onclick="bucar()" class="submit-btn">Buscar</button>
+	</div>
+</div>
+
+<script>
+	function bucar() {
+		const busqueda = {
+			participantes : document.getElementById('participants').value,
+			modoTransporte : document.getElementById('transport').value,
+			rangoPrecio : document.getElementById('budget').value,
+			clima : document.getElementById('weather').value,
+			actividadesInteres : document.getElementById('activities').value,
+			lugaresInteres : document.getElementById('places').value
+  		};
+
+		axios.post('/api/buscarST', { busqueda })
+		.then(function (response) {
+			window.location.href = '/resultadosST.html';
+		})
+		.catch(function (error) {
+			console.error('Error:', error.response ? error.response.data : error);
+			alert('Error al enviar la búsqueda: ' + (error.response && error.response.data ? error.response.data.message : 'Error desconocido'));
+		});
+    };
+</script>
+	
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Información del Sitio Turístico</title>
+<link rel="stylesheet" href="/css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+
+  <nav class="navigation-menu">
+    <div>
+      <a href="perfil.html" class="nav-link">Perfil</a>
+      <a href="busquedaST.html" class="nav-link">Buscar Sitios Turisticos</a>
+      <a href="viajes.html" class="nav-link">Viajes Guardados</a>
+    </div>
+    <div class="right-menu">
+      <a href="login.html" class="nav-link">Cerrar Sesión</a>
+    </div>
+  </nav>
+
+<div class="site-info-container">
+  <h2>Información del Sitio Turístico</h2>
+  <div id="siteInfo"></div>
+  <button id="selectButton" onclick="selectSite()">Confirmar Selección</button>
+  <button id="accommodationButton" onclick="searchAccommodation()">Buscar Alojamiento</button>
+  <button onclick="cancelar()">Volver Inicio</button>
+</div>
+
+<script>
+window.onload = function() {
+  axios.get('/api/mostrarST')
+    .then(function (response) {
+        const site = response.data.site;
+        const container = document.getElementById('siteInfo');
+        container.innerHTML = `
+            <h3>${site.nombre}</h3>
+            <p>${site.descripcion}</p>
+            <a href="${site.url}" target="_blank">Visitar sitio web</a>
+            <p>Precio de entrada: $${site.precioEntrada}</p>
+            <p>Actividades: ${site.actividades.join(', ')}</p>
+            <p>Modo de transporte: ${site.modoTransporte}</p>
+            <p>Clima: ${site.clima}</p>
+            <p>Ubicación: ${site.ubicacion}</p>
+        `;
+    })
+    .catch(function (error) {
+      console.error('Error al cargar los datos del sitio turístico:', error);
+    });
+}
+
+function selectSite() {
+    alert('Has confirmado la selección del sitio turístico.');
+    document.getElementById('accommodationButton').style.display = 'block';
+    document.getElementById('selectButton').style.display = 'none';
+
+    axios.get('/api/guardarST', {})
+    .then(function(response) {
+      console.log('Sitio Tristico guardado con éxito', response);
+      // Manejo post actualización, por ejemplo, redirigir o mostrar un mensaje de éxito
+    })
+    .catch(function(error) {
+      console.error('Error al guardar Sitio Turistico', error);
+      // Manejo de error, mostrar mensaje al usuario
+    });
+}
+
+function searchAccommodation() {
+  window.location.href = '/busquedaAlojamiento.html';
+}
+
+function cancelar() {
+  window.location.href = '/busquedaST.html'; 
+}
+
+</script>
+
+</body>
+</html>
